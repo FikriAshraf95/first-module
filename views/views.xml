@@ -1,0 +1,178 @@
+<odoo>
+  <data>
+
+    <record id="sequence_student" model="ir.sequence">
+      <field name="name">Student Sequence</field>
+      <field name="code">student.sequence</field>
+      <field name="prefix">ST</field>
+      <field name="padding">5</field>
+      <field name="number_next">1</field>
+      <field name="number_increment">1</field>
+    </record>
+
+    <!-- Student Form View -->
+    <record id="student_form" model="ir.ui.view">
+      <field name="name">Student</field>
+      <field name="model">student.student</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <header>
+              <field name="status" widget="statusbar"/>
+              <button name="set_student_to_new" type="object" string="Reset" class="oe_highlight"/>
+              <button name="set_student_to_accepted" type="object" string="Accept Student"
+                      class="oe_highlight"
+                      attrs="{'invisible':[('status','=','accepted')]}"
+              />
+              <button name="set_student_to_rejected" type="object" string="Reject Student"
+                      class="oe_highlight"
+                      attrs="{'invisible':[('status','=','rejected')]}"
+              />
+            </header>
+            <group>
+              <group>
+                <field name="student_inscription_ids" readonly="1"/>
+                <field name="name"/>
+                <field name="school_id"/>
+                <field name="age"/>
+              </group>
+              <group>
+                <field name="email"/>
+                <field name="join_date"/>
+                <field name="option_ids" widget="many2many_tags"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="General Information">
+                <group>
+                  <group>
+                    <field name="address"/>
+                    <field name="city"/>
+                  </group>
+                </group>
+              </page>
+              <page string="Notes">
+                <group>
+                  <group>
+                    <field name="note_1"/>
+                    <field name="note_2"/>
+                  </group>
+                  <group>
+                    <field name="note_3"/>
+                    <field name="note_4"/>
+                  </group>
+                  <group>
+                    <field name="average"/>
+                  </group>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- School Form View -->
+    <record id="school_form" model="ir.ui.view">
+      <field name="name">School</field>
+      <field name="model">school.school</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+              </group>
+                <field name="student_ids"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Student Tree View -->
+    <record id="student_tree" model="ir.ui.view">
+      <field name="name">Student</field>
+      <field name="model">student.student</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="age"/>
+          <field name="email"/>
+          <field name="join_date"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Student Kanban View -->
+    <record id="student_kanban" model="ir.ui.view">
+      <field name="name">Student Kanban</field>
+      <field name="model">student.student</field>
+      <field name="arch" type="xml">
+        <kanban class="o_kanban_mobile">
+           <templates>
+             <field name="name"/>
+             <field name="age"/>
+             <field name="school_id"/>
+             <field name="email"/>
+             <field name="join_date"/>
+              <t t-name="kanban-box">
+                 <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                    <div class="oe_kanban_details">
+                       <strong class="oe_partner_heading">
+                          <field name="name" />
+                       </strong>
+                       <ul>
+                        <li t-if="record.school_id.raw_value">School: <field name="school_id"/></li>
+                        <li t-if="record.join_date.raw_value">Join Date: <field name="join_date"/></li>
+                        <li t-if="record.email.raw_value">Email: <field name="email"/></li>
+                       </ul>
+                    </div>
+                 </div>
+              </t>
+           </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <!-- School Tree View -->
+    <record id="school_tree" model="ir.ui.view">
+      <field name="name">School</field>
+      <field name="model">school.school</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Student Action -->
+    <record id="student_action" model="ir.actions.act_window">
+    <field name="name">Student</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">student.student</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+
+    <!-- Student Kanban Action -->
+    <record id="action_student_kanban" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="student_kanban"/>
+    </record>
+
+    <!-- School Action -->
+    <record id="school_action" model="ir.actions.act_window">
+    <field name="name">School</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.school</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="student_menu" name="Student" sequence="4" action="student_action"/>
+    <menuitem id="school_menu" name="School" sequence="5" action="school_action"/>
+
+  </data>
+</odoo>
