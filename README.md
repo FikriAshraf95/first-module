@@ -1,1 +1,1 @@
-#First-module
+#This is a basic module for Odoo CE 12
